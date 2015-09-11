@@ -1,0 +1,81 @@
+<!--
+  <my-app>
+  @description Boilerplate for the music app (from MOTW 2015 workshop)
+  @version 0.0.1
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/spiral-knob/spiral-knob.html">
+
+<script src="../bower_components/spiral/spiral.min.js"></script>
+
+</template>
+
+<dom-module id="my-app">
+
+  <style>
+    /* your style here */
+  </style>
+
+  <template>
+    <!-- your DOM here -->
+    <h1>Hello World!</h1>
+    <p>What a beautiful day!</p>
+
+    <spiral-knob id="knobAmp" label="Amp" size="large" track="true" value"100" min-value="60" max-value"250"></spiral-knob>
+ 
+  </template>
+
+  <script>
+    Polymer({
+
+      is: "my-app",
+
+      properties: {
+        context: {
+          type: Object,
+          value: new AudioContext()
+        },
+
+        osc: Object,
+        amp: Object
+        /* user-defined properties */
+      },
+
+      /* user-defined methods */
+
+/*
+      playSound: function () {
+       // var context = new AudioContext();
+       var c = this.context.createOscillator();
+       osc.connect(this.context.destination);
+       osc.start();
+       osc.stop(1.0);
+      },
+*/
+
+      buildGraph: function(){
+       var c = this.context;
+       this.osc = c.createOscillator();
+       this.amp = c.createGain();
+
+       this.osc.to(this.amp).to(c.DAC);
+       this.osc.start();
+
+      },
+
+
+      /* Polymer built-in event handlers */
+      ready: function () {
+        //console.log("My app is ready!")
+        this.buildGraph();
+        this.$.knobAmp.bind(this.amp.gain);
+
+      },
+
+      attached: function () {}
+
+    });
+  </script>
+
+</dom-module>
